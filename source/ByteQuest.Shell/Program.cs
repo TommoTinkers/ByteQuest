@@ -1,47 +1,45 @@
 ﻿Console.WriteLine("Welcome to ByteQuest!");
 
-var enemyType = "Goblin";
 
-var enemyEvasion = 5d;
-var enemyAccuracy = 3d;
-var enemyDefence = 8d;
-var enemyStrength = 9d;
+var enemy = new Enemy("Goblin", 20, 9, 3, 5, 8);
+var player = new Player("Dave", 5, 8, 4, 6, 11);
 
-var enemyHealth = 20;
 
-var playerHealth = 5;
-var playerAccuracy = 4d;
-var playerEvasion = 6;
-var playerStrength = 8d;
-var playerDefence = 11d;
 
-Console.WriteLine($"A {enemyType} blocks your path.");
+
+Console.WriteLine($"A {enemy.Type} blocks your path.");
 
 while (true)
 {
-	Console.WriteLine($"Your health: {playerHealth}");
+	Console.WriteLine($"Your health: {player.Health}");
 	Console.WriteLine("What do you want to do?");
 
+	
 	Console.Write("-> ");
 	var input = Console.ReadLine();
-
+	while (input is null)
+	{
+		Console.Write("-> ");
+		input =Console.ReadLine();
+	}
+	
 	switch (input.ToLowerInvariant())
 	{
 		case "help":
 			Console.WriteLine("Available actions");
-			Console.WriteLine($"attack - Attack the {enemyType} physically.");
+			Console.WriteLine($"attack - Attack the {enemy.Type} physically.");
 			break;
 		case "attack":
-			Console.WriteLine($"You attempt to attack the {enemyType}.");
+			Console.WriteLine($"You attempt to attack the {enemy.Type}.");
 			var percentile = Random.Shared.NextDouble();
-			var didAttackHit = (playerAccuracy / enemyEvasion) >= percentile;
+			var didAttackHit = ((double)player.Accuracy / enemy.Evasion) >= percentile;
 			if (didAttackHit)
 			{
-				Console.WriteLine($"You managed to hit the {enemyType}");
+				Console.WriteLine($"You managed to hit the {enemy.Type}");
 				var defencePercentile = Random.Shared.NextDouble();
 				var strengthPercentile = Random.Shared.NextDouble();
-				var damage = (int)Math.Max(1d, (playerStrength * strengthPercentile) - (enemyDefence * defencePercentile));
-				enemyHealth = enemyHealth <= damage ? 0 : enemyHealth - damage;
+				var damage = (uint)Math.Max(1d, (player.Strength * strengthPercentile) - (enemy.Defence * defencePercentile));
+				enemy = enemy with {Health = enemy.Health <= damage ? 0 : enemy.Health - damage };
 				Console.WriteLine($"You caused {damage} points of damage.");
 			}
 			else
@@ -54,22 +52,22 @@ while (true)
 			break;
 	}
 
-	if (enemyHealth == 0)
+	if (enemy.Health == 0)
 	{
-		Console.WriteLine($"The {enemyType} is dead.");
+		Console.WriteLine($"The {enemy.Type} is dead.");
 	}
 	else
 	{
-		Console.WriteLine($"The {enemyType} retaliates.");
+		Console.WriteLine($"The {enemy.Type} retaliates.");
 		var percentile = Random.Shared.NextDouble();
-		var didAttackHit = (enemyAccuracy / playerEvasion) >= percentile;
+		var didAttackHit = ((double)enemy.Accuracy / player.Evasion) >= percentile;
 		if (didAttackHit)
 		{
-			Console.WriteLine($"The {enemyType} managed to hit you!");
+			Console.WriteLine($"The {enemy.Type} managed to hit you!");
 			var defencePercentile = Random.Shared.NextDouble();
 			var strengthPercentile = Random.Shared.NextDouble();
-			var damage = (int)Math.Max(1d, (enemyStrength * strengthPercentile) - (playerDefence * defencePercentile));
-			playerHealth = playerHealth <= damage ? 0 : playerHealth - damage;
+			var damage = (uint)Math.Max(1d, (enemy.Strength * strengthPercentile) - (player.Defence * defencePercentile));
+			player = player with { Health = player.Health <= damage ? 0 : player.Health - damage };
 			Console.WriteLine($"You suffered {damage} points of damage.");
 		}
 		else
@@ -78,9 +76,12 @@ while (true)
 		}
 	}
 
-	if (playerHealth == 0)
+	if (player.Health == 0)
 	{
 		Console.WriteLine("You died");
 		break;
 	}
 }
+
+internal sealed record Enemy(string Type, uint Health, uint Strength, uint Accuracy, uint Evasion, uint Defence);
+internal sealed record Player(string Name, uint Health, uint Strength, uint Accuracy, uint Evasion, uint Defence);
