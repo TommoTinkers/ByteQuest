@@ -50,7 +50,9 @@ public static class BattleModeView
 			case "attack":
 				Console.WriteLine($"You attempt to attack the {enemy.Type}.");
 				var (ev,percentile) = state.RollPercentile();
+				ledger = ledger.RecordEntry(ev);
 				state = ev.Apply(state);
+				
 				var didAttackHit = ((double)state.Player.Accuracy / enemy.Evasion) >= percentile;
 				if (didAttackHit)
 				{

@@ -5,11 +5,11 @@ namespace ByteQuest.CoreLogic.GameRules;
 
 public static class Percentile
 {
-	public static (UpdateSeed, double) RollPercentile(this GameState state)
+	public static (UpdateSeedEntry, double) RollPercentile(this GameState state)
 	{
 		var seed = state.Seed;
 		var random = new Random(seed);
 		var percentile = random.NextDouble();
-		return (new UpdateSeed(random.Next(), new Guid()), percentile);
+		return (new UpdateSeedEntry(random.Next(), new Guid()), percentile);
 	}
 }

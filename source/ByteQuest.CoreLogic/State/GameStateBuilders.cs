@@ -25,11 +25,11 @@ public static class GameStateBuilders
 		};
 	}
 
-	public static GameState ApplyChange(GameState gameState, Entry entry)
+	public static GameState ApplyChange(this GameState gameState, Entry entry)
 	{
 		return entry switch
 		{
-			UpdateSeed updateSeed => updateSeed.Apply(gameState),
+			UpdateSeedEntry updateSeed => updateSeed.Apply(gameState),
 			_ => throw new ArgumentOutOfRangeException(nameof(entry))
 		};
 	}

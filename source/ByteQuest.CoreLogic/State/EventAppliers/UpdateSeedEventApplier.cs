@@ -4,6 +4,6 @@ namespace ByteQuest.CoreLogic.State.EventAppliers;
 
 public static class UpdateSeedEventApplier
 {
-	public static GameState Apply(this UpdateSeed updateSeedEvent, GameState to) =>
-		to with { Seed = updateSeedEvent.newSeed };
+	public static GameState Apply(this UpdateSeedEntry updateSeedEntryEvent, GameState to) =>
+		to with { Seed = updateSeedEntryEvent.newSeed };
 }
