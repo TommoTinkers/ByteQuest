@@ -1,10 +1,28 @@
-﻿Console.WriteLine("Welcome to ByteQuest!");
+﻿using System.Collections.Immutable;
+using ByteQuest.CoreLogic.Data;
+using ByteQuest.CoreLogic.Events;
+using ByteQuest.CoreLogic.State;
+using static ByteQuest.CoreLogic.State.GameStateBuilders;
+
+
+Console.WriteLine("Welcome to ByteQuest!");
 
 
 var enemy = new Enemy("Goblin", 20, 9, 3, 5, 8);
-var player = new Player("Dave", 5, 8, 4, 6, 11);
 
 
+var events = ImmutableArray<Event>.Empty;
+
+events = events.Add(new CreatePlayerEvent(50, 12, 7, 2, 3));
+
+var initializationResult = InitializeFromEvents(events);
+
+if (initializationResult is not GameStateInitialized initialized)
+{
+	return;
+}
+
+var player = initialized.State.Player;
 
 
 Console.WriteLine($"A {enemy.Type} blocks your path.");
@@ -82,6 +100,3 @@ while (true)
 		break;
 	}
 }
-
-internal sealed record Enemy(string Type, uint Health, uint Strength, uint Accuracy, uint Evasion, uint Defence);
-internal sealed record Player(string Name, uint Health, uint Strength, uint Accuracy, uint Evasion, uint Defence);
