@@ -1,39 +1,37 @@
-using System.Collections.Immutable;
 using ByteQuest.CoreLogic.Data;
-using ByteQuest.CoreLogic.Events;
-using static ByteQuest.CoreLogic.State.GameStateInititializationFailureReason;
+using ByteQuest.CoreLogic.Data.Modes;
+using ByteQuest.CoreLogic.Entries;
+using ByteQuest.CoreLogic.Ledgers;
+using ByteQuest.CoreLogic.State.EventAppliers;
 
 namespace ByteQuest.CoreLogic.State;
 
-public abstract record GameStateInitializationResult;
-
-public sealed record GameStateInitialized(GameState State) : GameStateInitializationResult;
-
-internal sealed record GameStateInitialiationFailed(GameStateInititializationFailureReason reasons) : GameStateInitializationResult;
-
-
-internal enum GameStateInititializationFailureReason
-{
-	NoEventsToInitialize,
-	NoGameStartedEvent
-}
 
 
 public static class GameStateBuilders
 {
-	public static GameStateInitializationResult InitializeFromEvents(ImmutableArray<Event> events)
+		
+	private static readonly Enemy enemy = new Enemy("Goblin", 20, 9, 3, 5, 8);
+
+	private static readonly GameState defaultGameState =
+		new GameState(new Player(20, 20, 20, 20, 20), 10, new PlayersTurn(enemy));
+	
+	public static GameState CreateFromLedger(GameLedger ledger)
 	{
-		return events switch
+		return ledger.Entries switch
 		{
-			[] => new GameStateInitialiationFailed(NoEventsToInitialize),
-			[GameStartedEvent c,] => new GameStateInitialized(ApplyEvents(new GameState(c.Player, c.Seed), events[1..])),
-			_ => new GameStateInitialiationFailed(NoGameStartedEvent)
+			[] => defaultGameState,
+			var entries => entries.Aggregate(defaultGameState, ApplyChange)
 		};
 	}
-	
-	public static GameState ApplyEvents(GameState state, ImmutableArray<Event> events)
+
+	public static GameState ApplyChange(GameState gameState, Entry entry)
 	{
-		return state;
+		return entry switch
+		{
+			UpdateSeed updateSeed => updateSeed.Apply(gameState),
+			_ => throw new ArgumentOutOfRangeException(nameof(entry))
+		};
 	}
 }
 
