@@ -1,8 +1,10 @@
+using ByteQuest.CoreLogic.Data;
+
 namespace ByteQuest.CoreLogic.Events;
 
 public abstract record Event;
 
-public sealed record CreatePlayerEvent(uint Health, uint Strength, uint Accuracy, uint Evasion, uint Defence) : Event;
+public sealed record GameStartedEvent(Player Player, int Seed) : Event;
 
 
 

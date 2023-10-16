@@ -15,7 +15,7 @@ internal sealed record GameStateInitialiationFailed(GameStateInititializationFai
 internal enum GameStateInititializationFailureReason
 {
 	NoEventsToInitialize,
-	NoPlayerCreated
+	NoGameStartedEvent
 }
 
 
@@ -26,9 +26,8 @@ public static class GameStateBuilders
 		return events switch
 		{
 			[] => new GameStateInitialiationFailed(NoEventsToInitialize),
-			[CreatePlayerEvent c,] => new GameStateInitialized(ApplyEvents(new GameState(new Player(c.Health, c.Strength, c.Accuracy,
-				c.Evasion, c.Defence)), events[1..])),
-			_ => new GameStateInitialiationFailed(NoPlayerCreated)
+			[GameStartedEvent c,] => new GameStateInitialized(ApplyEvents(new GameState(c.Player, c.Seed), events[1..])),
+			_ => new GameStateInitialiationFailed(NoGameStartedEvent)
 		};
 	}
 	

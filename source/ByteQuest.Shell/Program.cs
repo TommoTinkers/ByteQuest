@@ -13,7 +13,7 @@ var enemy = new Enemy("Goblin", 20, 9, 3, 5, 8);
 
 var events = ImmutableArray<Event>.Empty;
 
-events = events.Add(new CreatePlayerEvent(50, 12, 7, 2, 3));
+events = events.Add(new GameStartedEvent(new Player(50, 12, 7, 2, 3), 10));
 
 var initializationResult = InitializeFromEvents(events);
 
