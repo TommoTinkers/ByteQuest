@@ -1,5 +1,5 @@
 using ByteQuest.CoreLogic.Data.Modes;
-using ByteQuest.CoreLogic.GameRules;
+using ByteQuest.CoreLogic.GamePlay;
 using ByteQuest.CoreLogic.Ledgers;
 using ByteQuest.CoreLogic.State;
 using ByteQuest.CoreLogic.State.EventAppliers;

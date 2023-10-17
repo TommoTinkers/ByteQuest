@@ -1,7 +1,7 @@
 using ByteQuest.CoreLogic.Entries;
 using ByteQuest.CoreLogic.State;
 
-namespace ByteQuest.CoreLogic.GameRules;
+namespace ByteQuest.CoreLogic.GamePlay;
 
 public static class Percentile
 {
