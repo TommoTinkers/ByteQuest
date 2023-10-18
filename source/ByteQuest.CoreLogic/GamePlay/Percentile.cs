@@ -12,7 +12,7 @@ public static class Percentile
 		var random = new Random(seed);
 		var percentile = random.NextDouble();
 		var entry = new UpdateSeedEntry(random.Next(), new Guid());
-		snl = snl with { State = snl.State.ApplyChange(entry), Ledger = snl.Ledger with { Entries = snl.Ledger.Entries.Add(entry)}};
+		snl = snl.RecordEntry(entry);
 		return (snl, percentile);
 	}
 }

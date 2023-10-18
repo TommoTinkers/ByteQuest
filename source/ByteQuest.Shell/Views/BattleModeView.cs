@@ -47,24 +47,23 @@ public static class BattleModeView
 				Console.WriteLine($"attack - Attack the {enemy.Type} physically.");
 				break;
 			case "attack":
-				Console.WriteLine($"You attempt to attack the {enemy.Type}.");
-				(snl, var percentile) = snl.RollPercentile();
+				(snl, var results) = playersTurn.Attack(snl);
+				
+
 				
 				
-				var didAttackHit = ((double)snl.State.Player.Accuracy / enemy.Evasion) >= percentile;
-				if (didAttackHit)
-				{
-					Console.WriteLine($"You managed to hit the {enemy.Type}");
+				
+
+/*					Console.WriteLine($"You managed to hit the {enemy.Type}");
 					var defencePercentile = Random.Shared.NextDouble();
 					var strengthPercentile = Random.Shared.NextDouble();
 					var damage = (uint)Math.Max(1d, (snl.State.Player.Strength * strengthPercentile) - (snl.State.Player.Defence * defencePercentile));
 					enemy = enemy with {Health = enemy.Health <= damage ? 0 : enemy.Health - damage };
 					Console.WriteLine($"You caused {damage} points of damage.");
-				}
-				else
-				{
+				
+			
 					Console.WriteLine("Your attack missed.");
-				}
+				*/
 				break;			
 			default:
 				Console.WriteLine("I did not understand this input");
