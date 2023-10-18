@@ -2,7 +2,7 @@ using ByteQuest.CoreLogic.Data;
 using ByteQuest.CoreLogic.Data.Modes;
 using ByteQuest.CoreLogic.Entries;
 using ByteQuest.CoreLogic.Ledgers;
-using ByteQuest.CoreLogic.State.EventAppliers;
+using ByteQuest.CoreLogic.Ledgers.EventAppliers;
 
 namespace ByteQuest.CoreLogic.State;
 

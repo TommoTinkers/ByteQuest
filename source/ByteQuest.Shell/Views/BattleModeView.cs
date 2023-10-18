@@ -2,34 +2,33 @@ using ByteQuest.CoreLogic.Data.Modes;
 using ByteQuest.CoreLogic.GamePlay;
 using ByteQuest.CoreLogic.Ledgers;
 using ByteQuest.CoreLogic.State;
-using ByteQuest.CoreLogic.State.EventAppliers;
 
 namespace ByteQuest.Shell.Views;
 
 public static class BattleModeView
 {
-	public static void View(BattleMode battleMode, GameState state, GameLedger ledger)
+	public static void View(BattleMode battleMode, StateAndLedger snl)
 	{
 		switch (battleMode)
 		{
 			case EnemysTurn enemysTurn:
-				PlayEnemysTurn(enemysTurn, state, ledger);
+				PlayEnemysTurn(enemysTurn, snl);
 				break;
 			case PlayersTurn playersTurn:
-				PlayPlayersTurn(playersTurn, state, ledger);
+				PlayPlayersTurn(playersTurn, snl);
 				break;
 		}
 	}
 
-	private static void PlayEnemysTurn(EnemysTurn enemysTurn, GameState state, GameLedger ledger)
+	private static void PlayEnemysTurn(EnemysTurn enemysTurn, StateAndLedger snl)
 	{
 		Console.WriteLine("It is the enemies turn.");
 	}
 
-	private static void PlayPlayersTurn(PlayersTurn playersTurn, GameState state, GameLedger ledger)
+	private static void PlayPlayersTurn(PlayersTurn playersTurn, StateAndLedger snl)
 	{
 		var enemy = playersTurn.Enemy;
-		Console.WriteLine($"Your health: {state.Player.Health}");
+		Console.WriteLine($"Your health: {snl.State.Player.Health}");
 		Console.WriteLine("What do you want to do?");
 
 	
@@ -49,17 +48,16 @@ public static class BattleModeView
 				break;
 			case "attack":
 				Console.WriteLine($"You attempt to attack the {enemy.Type}.");
-				var (ev,percentile) = state.RollPercentile();
-				ledger = ledger.RecordEntry(ev);
-				state = ev.Apply(state);
+				(snl, var percentile) = snl.RollPercentile();
 				
-				var didAttackHit = ((double)state.Player.Accuracy / enemy.Evasion) >= percentile;
+				
+				var didAttackHit = ((double)snl.State.Player.Accuracy / enemy.Evasion) >= percentile;
 				if (didAttackHit)
 				{
 					Console.WriteLine($"You managed to hit the {enemy.Type}");
 					var defencePercentile = Random.Shared.NextDouble();
 					var strengthPercentile = Random.Shared.NextDouble();
-					var damage = (uint)Math.Max(1d, (state.Player.Strength * strengthPercentile) - (state.Player.Defence * defencePercentile));
+					var damage = (uint)Math.Max(1d, (snl.State.Player.Strength * strengthPercentile) - (snl.State.Player.Defence * defencePercentile));
 					enemy = enemy with {Health = enemy.Health <= damage ? 0 : enemy.Health - damage };
 					Console.WriteLine($"You caused {damage} points of damage.");
 				}

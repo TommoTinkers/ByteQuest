@@ -11,17 +11,16 @@ public static class Attacking
 	public abstract record PlayerAttackInfo;
 
 	public sealed record PlayerAttackResults(GameLedger Ledger, GameState state, ImmutableArray<PlayerAttackInfo> Info);
-	public static PlayerAttackResults Attack(this PlayersTurn playersTurn, GameLedger ledger, GameState state)
+	public static PlayerAttackResults Attack(this PlayersTurn playersTurn, StateAndLedger snl)
 	{
 		var enemy = playersTurn.Enemy;
-		var player = state.Player;
-		var(entry, percentile) = state.RollPercentile();
-		ledger = ledger.RecordEntry(entry);
-		state = state.ApplyChange(entry);
+		var player = snl.State.Player;
+		(snl, var percentile) = snl.RollPercentile();
+		
 
 		var requiredPercentile = BattleRules.AttackSuccessPercentile(player.Accuracy,enemy.Evasion);
 		var didHit = percentile >= requiredPercentile;
 
-		return new PlayerAttackResults(ledger, state, ImmutableArray<PlayerAttackInfo>.Empty);
+		return new PlayerAttackResults(snl.Ledger, snl.State, ImmutableArray<PlayerAttackInfo>.Empty);
 	}
 }

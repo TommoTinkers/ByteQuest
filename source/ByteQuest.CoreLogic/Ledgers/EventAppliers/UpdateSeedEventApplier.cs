@@ -1,6 +1,7 @@
 using ByteQuest.CoreLogic.Entries;
+using ByteQuest.CoreLogic.State;
 
-namespace ByteQuest.CoreLogic.State.EventAppliers;
+namespace ByteQuest.CoreLogic.Ledgers.EventAppliers;
 
 public static class UpdateSeedEventApplier
 {
