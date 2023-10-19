@@ -16,9 +16,13 @@ var ledger = new GameLedger(ImmutableArray<Entry>.Empty);
 
 var state = CreateFromLedger(ledger);
 
-if (state.Mode is not BattleMode battleMode)
-{
-	return;
-}
+while (true)
 
-BattleModeView.View(battleMode, new StateAndLedger(state, ledger));
+{
+	if (state.Mode is not BattleMode battleMode)
+	{
+		return;
+	}
+
+	(state, ledger) = BattleModeView.View(battleMode, new StateAndLedger(state, ledger));
+}

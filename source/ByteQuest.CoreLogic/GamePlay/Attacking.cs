@@ -10,9 +10,19 @@ public static class Attacking
 {
 	public abstract record PlayerAttackInfo;
 
+	public sealed record AttackAttempted : PlayerAttackInfo;
+
+	public sealed record AttackSucceeded : PlayerAttackInfo;
+
+	public sealed record AttackFailed : PlayerAttackInfo;
+	
 	public sealed record PlayerAttackResults(ImmutableArray<PlayerAttackInfo> Info);
 	public static (StateAndLedger, PlayerAttackResults) Attack(this PlayersTurn playersTurn, StateAndLedger snl)
 	{
+		var infos = new List<PlayerAttackInfo>();
+		
+		
+		infos.Add(new AttackAttempted());
 		(snl, var percentile) = snl.RollPercentile();
 		
 		var enemy = playersTurn.Enemy;
@@ -21,6 +31,8 @@ public static class Attacking
 		var requiredPercentile = BattleRules.AttackSuccessPercentile(player.Accuracy,enemy.Evasion);
 		var didHit = percentile >= requiredPercentile;
 
-		return new (snl, new PlayerAttackResults(ImmutableArray<PlayerAttackInfo>.Empty));
+		infos.Add(didHit ? new AttackSucceeded() : new AttackFailed());
+		
+		return new (snl, new PlayerAttackResults(infos.ToImmutableArray()));
 	}
 }

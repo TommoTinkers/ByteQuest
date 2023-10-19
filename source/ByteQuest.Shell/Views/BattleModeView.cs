@@ -7,7 +7,7 @@ namespace ByteQuest.Shell.Views;
 
 public static class BattleModeView
 {
-	public static void View(BattleMode battleMode, StateAndLedger snl)
+	public static StateAndLedger View(BattleMode battleMode, StateAndLedger snl)
 	{
 		switch (battleMode)
 		{
@@ -15,9 +15,11 @@ public static class BattleModeView
 				PlayEnemysTurn(enemysTurn, snl);
 				break;
 			case PlayersTurn playersTurn:
-				PlayPlayersTurn(playersTurn, snl);
+				snl = PlayPlayersTurn(playersTurn, snl);
 				break;
 		}
+
+		return snl;
 	}
 
 	private static void PlayEnemysTurn(EnemysTurn enemysTurn, StateAndLedger snl)
@@ -25,7 +27,7 @@ public static class BattleModeView
 		Console.WriteLine("It is the enemies turn.");
 	}
 
-	private static void PlayPlayersTurn(PlayersTurn playersTurn, StateAndLedger snl)
+	private static StateAndLedger PlayPlayersTurn(PlayersTurn playersTurn, StateAndLedger snl)
 	{
 		var enemy = playersTurn.Enemy;
 		Console.WriteLine($"Your health: {snl.State.Player.Health}");
@@ -48,9 +50,19 @@ public static class BattleModeView
 				break;
 			case "attack":
 				(snl, var results) = playersTurn.Attack(snl);
-				
 
-				
+				foreach (var result in results.Info)
+				{
+					var message = result switch
+					{
+						Attacking.AttackAttempted attackAttempted => "You attempt an attack.",
+						Attacking.AttackFailed attackFailed => "You missed.",
+						Attacking.AttackSucceeded attackSucceeded => "You managed to strike the enemy.",
+						_ => throw new ArgumentOutOfRangeException(nameof(result))
+					};
+					Console.WriteLine(message);
+				}
+									
 				
 				
 
@@ -69,6 +81,8 @@ public static class BattleModeView
 				Console.WriteLine("I did not understand this input");
 				break;
 		}
-		
+
+		return snl;
 	}
+	
 }
