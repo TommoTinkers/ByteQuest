@@ -2,6 +2,7 @@ using ByteQuest.CoreLogic.Data.Modes;
 using ByteQuest.CoreLogic.GamePlay;
 using ByteQuest.CoreLogic.Ledgers;
 using ByteQuest.CoreLogic.State;
+using static ByteQuest.CoreLogic.GamePlay.Attacking;
 
 namespace ByteQuest.Shell.Views;
 
@@ -55,9 +56,10 @@ public static class BattleModeView
 				{
 					var message = result switch
 					{
-						Attacking.AttackAttempted attackAttempted => "You attempt an attack.",
-						Attacking.AttackFailed attackFailed => "You missed.",
-						Attacking.AttackSucceeded attackSucceeded => "You managed to strike the enemy.",
+						AttackAttempted => "You attempt an attack.",
+						AttackFailed => "You missed.",
+						AttackSucceeded => "You managed to strike the enemy.",
+						DamageDealt(var amount, var remaining) => $"You inflicted {amount} points of damage. The enemy has {remaining} health points left.", 
 						_ => throw new ArgumentOutOfRangeException(nameof(result))
 					};
 					Console.WriteLine(message);

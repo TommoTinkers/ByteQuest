@@ -14,6 +14,8 @@ public static class Attacking
 
 	public sealed record AttackSucceeded : PlayerAttackInfo;
 
+	public sealed record DamageDealt(uint amount, uint remaining) : PlayerAttackInfo;
+
 	public sealed record AttackFailed : PlayerAttackInfo;
 	
 	public sealed record PlayerAttackResults(ImmutableArray<PlayerAttackInfo> Info);
@@ -32,6 +34,19 @@ public static class Attacking
 		var didHit = percentile >= requiredPercentile;
 
 		infos.Add(didHit ? new AttackSucceeded() : new AttackFailed());
+
+		if (didHit)
+		{
+			(snl, var damageRoll) = snl.RollPercentile();
+			(snl, var defenceRoll) = snl.RollPercentile();
+			var damage =
+				BattleRules.CalculateDamage(snl.State.Player.Strength, playersTurn.Enemy.Defence, damageRoll, defenceRoll);
+
+			var remaining = playersTurn.Enemy.Health - damage;
+			
+			infos.Add(new DamageDealt(damage, remaining));
+		}	
+					
 		
 		return new (snl, new PlayerAttackResults(infos.ToImmutableArray()));
 	}
