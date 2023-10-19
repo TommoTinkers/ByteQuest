@@ -11,7 +11,7 @@ public static class Percentile
 		var seed = snl.State.Seed;
 		var random = new Random(seed);
 		var percentile = random.NextDouble();
-		var entry = new UpdateSeedEntry(random.Next(), new Guid());
+		var entry = new UpdateSeedEntry(random.Next());
 		snl = snl.RecordEntry(entry);
 		return (snl, percentile);
 	}

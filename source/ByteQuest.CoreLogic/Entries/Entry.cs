@@ -1,11 +1,11 @@
 
 namespace ByteQuest.CoreLogic.Entries;
 
-public abstract record Entry(Guid id);
+public abstract record Entry;
 
 
 
-public sealed record UpdateSeedEntry(int newSeed, Guid id) : Entry(id);
+public sealed record UpdateSeedEntry(int newSeed) : Entry;
 
 
 
