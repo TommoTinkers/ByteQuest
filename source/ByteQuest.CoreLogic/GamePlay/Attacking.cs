@@ -15,7 +15,7 @@ public static class Attacking
 
 	public sealed record AttackSucceeded : PlayerAttackInfo;
 
-	public sealed record DamageDealt(uint amount, uint remaining) : PlayerAttackInfo;
+	public sealed record DamageDealt(uint amount) : PlayerAttackInfo;
 
 	public sealed record AttackFailed : PlayerAttackInfo;
 	
@@ -41,12 +41,14 @@ public static class Attacking
 			(snl, var defenceRoll) = snl.RollPercentile();
 			var damage =
 				BattleRules.CalculateDamage(snl.State.Player.Strength, playersTurn.Enemy.Defence, damageRoll, defenceRoll);
-
-			var remaining = playersTurn.Enemy.Health - damage;
 			
-			infos.Add(new DamageDealt(damage, remaining));
-
+			
 			snl = snl.RecordEntry(new DamageEnemyEntry(damage));
+			
+			
+			infos.Add(new DamageDealt(damage));
+
+			
 		}	
 					
 		

@@ -59,25 +59,12 @@ public static class BattleModeView
 						AttackAttempted => "You attempt an attack.",
 						AttackFailed => "You missed.",
 						AttackSucceeded => "You managed to strike the enemy.",
-						DamageDealt(var amount, var remaining) => $"You inflicted {amount} points of damage. The enemy has {remaining} health points left.", 
+						DamageDealt(var amount) => $"You inflicted {amount} points of damage.", 
 						_ => throw new ArgumentOutOfRangeException(nameof(result))
 					};
 					Console.WriteLine(message);
 				}
-									
 				
-				
-
-/*					Console.WriteLine($"You managed to hit the {enemy.Type}");
-					var defencePercentile = Random.Shared.NextDouble();
-					var strengthPercentile = Random.Shared.NextDouble();
-					var damage = (uint)Math.Max(1d, (snl.State.Player.Strength * strengthPercentile) - (snl.State.Player.Defence * defencePercentile));
-					enemy = enemy with {Health = enemy.Health <= damage ? 0 : enemy.Health - damage };
-					Console.WriteLine($"You caused {damage} points of damage.");
-				
-			
-					Console.WriteLine("Your attack missed.");
-				*/
 				break;			
 			default:
 				Console.WriteLine("I did not understand this input");
