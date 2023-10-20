@@ -5,7 +5,7 @@ using ByteQuest.CoreLogic.Entries;
 using ByteQuest.CoreLogic.Ledgers;
 using ByteQuest.CoreLogic.State;
 using ByteQuest.Shell.Views;
-using static ByteQuest.CoreLogic.State.GameStateBuilders;
+using static ByteQuest.CoreLogic.State.GameStateBuilder;
 
 
 Console.WriteLine("Welcome to ByteQuest!");

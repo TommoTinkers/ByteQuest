@@ -8,7 +8,7 @@ namespace ByteQuest.CoreLogic.State;
 
 
 
-public static class GameStateBuilders
+public static class GameStateBuilder
 {
 
 	private static readonly Enemy enemy = new("Goblin", 20, 9, 3, 5, 8);
@@ -20,7 +20,7 @@ public static class GameStateBuilders
 		return ledger.Entries switch
 		{
 			[] => defaultGameState,
-			var entries => entries.Aggregate(defaultGameState, GameStateEntryApplier.ApplyChange)
+			var entries => entries.Aggregate(defaultGameState, GameStateEntryApplier.ApplyEntry)
 		};
 	}
 }

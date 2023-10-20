@@ -1,7 +1,7 @@
 using ByteQuest.CoreLogic.Entries;
 using ByteQuest.CoreLogic.State;
 
-namespace ByteQuest.CoreLogic.Ledgers.EventAppliers;
+namespace ByteQuest.CoreLogic.Ledgers.EntryAppliers;
 
 public static class UpdateSeedEntryApplier
 {
