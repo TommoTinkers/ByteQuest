@@ -15,8 +15,4 @@
       <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\ByteQuest.CoreLogic\ByteQuest.CoreLogic.csproj" />
-    </ItemGroup>
-
 </Project>
