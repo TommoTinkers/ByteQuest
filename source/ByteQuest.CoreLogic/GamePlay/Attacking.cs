@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using ByteQuest.CoreLogic.Data.Modes;
+using ByteQuest.CoreLogic.Entries;
 using ByteQuest.CoreLogic.GameRules;
 using ByteQuest.CoreLogic.Ledgers;
 using ByteQuest.CoreLogic.State;
@@ -21,10 +22,9 @@ public static class Attacking
 	public sealed record PlayerAttackResults(ImmutableArray<PlayerAttackInfo> Info);
 	public static (StateAndLedger, PlayerAttackResults) Attack(this PlayersTurn playersTurn, StateAndLedger snl)
 	{
-		var infos = new List<PlayerAttackInfo>();
-		
-		
-		infos.Add(new AttackAttempted());
+		var infos = new List<PlayerAttackInfo> { new AttackAttempted() };
+
+
 		(snl, var percentile) = snl.RollPercentile();
 		
 		var enemy = playersTurn.Enemy;
@@ -45,6 +45,8 @@ public static class Attacking
 			var remaining = playersTurn.Enemy.Health - damage;
 			
 			infos.Add(new DamageDealt(damage, remaining));
+
+			snl = snl.RecordEntry(new DamageEnemyEntry(damage));
 		}	
 					
 		
