@@ -7,4 +7,11 @@ public static class Rolling
 		var random = new Random(seed);
 		return (random.NextDouble(), random.Next());
 	}
+
+	public static (double first, double second, int newSeed) RollPercentilePair(int seed)
+	{
+		(var first, seed) = RollPercentile(seed);
+		(var second, seed) = RollPercentile(seed);
+		return (first, second, seed);
+	}
 }

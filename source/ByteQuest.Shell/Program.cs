@@ -8,7 +8,7 @@ Console.WriteLine("Welcome to ByteQuest!");
 
 var enemy = new { Name = "Bob The Goblin", Health = 10u, Strength = 5u, Accuracy = 5u, Evasion = 5u, Defence = 5u };
 
-var player = new { Health = 10u, Strength = 5u, Accuracy = 5u, Evasion = 5u, Defence = 5u};
+var player = new { Health = 10u, Strength = 5u, Accuracy = 6u, Evasion = 6u, Defence = 6u};
 
 
 Console.WriteLine($"You are accosted by {enemy.Name}");
@@ -30,8 +30,7 @@ while (true)
 		{
 			case "attack":
 				Console.WriteLine($"You attack {enemy.Name}");
-				(var accuracyRoll, seed) = Rolling.RollPercentile(seed);
-				(var evasionRoll, seed) = Rolling.RollPercentile(seed);
+				(var accuracyRoll, var evasionRoll, seed) = Rolling.RollPercentilePair(seed);
 
 				var didHit = CalculateDidHit(player.Accuracy, enemy.Evasion, accuracyRoll, evasionRoll);
 				
@@ -39,8 +38,7 @@ while (true)
 				{
 					Console.WriteLine($"You managed to hit {enemy.Name}");
 
-					(var strengthRoll, seed) = Rolling.RollPercentile(seed);
-					(var defenceRoll, seed) = Rolling.RollPercentile(seed);
+					(var strengthRoll, var  defenceRoll, seed) = Rolling.RollPercentilePair(seed);
 
 
 					var damageDealt = CalculateDamage(player.Strength, enemy.Defence, enemy.Health,
@@ -71,8 +69,8 @@ while (true)
 	else
 	{
 		Console.WriteLine($"{enemy.Name} tries to attack you!");
-		(var accuracyRoll, seed) = Rolling.RollPercentile(seed);
-		(var evasionRoll, seed) = Rolling.RollPercentile(seed);
+		(var accuracyRoll, var evasionRoll, seed) = Rolling.RollPercentilePair(seed);
+		
 
 		var didHit = CalculateDidHit(enemy.Accuracy, player.Evasion, accuracyRoll, evasionRoll);
 		
@@ -80,8 +78,8 @@ while (true)
 		{
 			Console.WriteLine($"You have been hit!");
 
-			(var strengthRoll, seed) = Rolling.RollPercentile(seed);
-			(var defenceRoll, seed) = Rolling.RollPercentile(seed);
+			(var strengthRoll, var  defenceRoll, seed) = Rolling.RollPercentilePair(seed);
+			
 
 			var damageDealt = CalculateDamage(enemy.Strength, player.Defence, player.Health,
 				strengthRoll, defenceRoll);
