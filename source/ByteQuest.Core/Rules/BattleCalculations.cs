@@ -16,4 +16,12 @@ public static class BattleCalculations
 
 		return damageDealt > Health ? Health : damageDealt;
 	}
+
+	public static bool CalculateDidHit(uint Accuracy, uint Evasion, double accuracyRoll, double evasionRoll)
+	{
+		var acc = (uint)(accuracyRoll * Accuracy);
+		var eva = (uint)(evasionRoll * Evasion);
+
+		return acc > eva;
+	}
 }

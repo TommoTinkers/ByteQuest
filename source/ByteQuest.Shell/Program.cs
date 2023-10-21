@@ -1,4 +1,5 @@
 ﻿using ByteQuest.Core.Rules;
+using static ByteQuest.Core.Rules.BattleCalculations;
 using static Turn;
 
 Console.WriteLine("Welcome to ByteQuest!");
@@ -29,10 +30,12 @@ while (true)
 		{
 			case "attack":
 				Console.WriteLine($"You attack {enemy.Name}");
-				var requiredPercentile = 1 - (player.Accuracy / enemy.Evasion);
-				(var roll, seed) = Rolling.RollPercentile(seed);
+				(var accuracyRoll, seed) = Rolling.RollPercentile(seed);
+				(var evasionRoll, seed) = Rolling.RollPercentile(seed);
 
-				if (roll >= requiredPercentile)
+				var didHit = CalculateDidHit(player.Accuracy, enemy.Evasion, accuracyRoll, evasionRoll);
+				
+				if (didHit)
 				{
 					Console.WriteLine($"You managed to hit {enemy.Name}");
 
@@ -40,7 +43,7 @@ while (true)
 					(var defenceRoll, seed) = Rolling.RollPercentile(seed);
 
 
-					var damageDealt = BattleCalculations.CalculateDamage(player.Strength, enemy.Defence, enemy.Health,
+					var damageDealt = CalculateDamage(player.Strength, enemy.Defence, enemy.Health,
 						strengthRoll, defenceRoll);
 
 					Console.WriteLine($"You did {damageDealt} points of damage to {enemy.Name}");
@@ -68,16 +71,19 @@ while (true)
 	else
 	{
 		Console.WriteLine($"{enemy.Name} tries to attack you!");
-		var requiredPercentile = 1 - (enemy.Accuracy / player.Evasion);
-		(var roll, seed) = Rolling.RollPercentile(seed);
-		if (roll >= requiredPercentile)
+		(var accuracyRoll, seed) = Rolling.RollPercentile(seed);
+		(var evasionRoll, seed) = Rolling.RollPercentile(seed);
+
+		var didHit = CalculateDidHit(enemy.Accuracy, player.Evasion, accuracyRoll, evasionRoll);
+		
+		if (didHit)
 		{
 			Console.WriteLine($"You have been hit!");
 
 			(var strengthRoll, seed) = Rolling.RollPercentile(seed);
 			(var defenceRoll, seed) = Rolling.RollPercentile(seed);
 
-			var damageDealt = BattleCalculations.CalculateDamage(enemy.Strength, player.Defence, player.Health,
+			var damageDealt = CalculateDamage(enemy.Strength, player.Defence, player.Health,
 				strengthRoll, defenceRoll);
 
 			Console.WriteLine($"You suffered {damageDealt} points of damage.");
@@ -94,7 +100,7 @@ while (true)
 			Console.WriteLine($"He missed!");
 		}
 
-		turn = Turn.Player;
+		turn = Player;
 	}
 }
 
