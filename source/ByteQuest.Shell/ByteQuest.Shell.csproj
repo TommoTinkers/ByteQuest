@@ -15,4 +15,8 @@
       <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ByteQuest.Core\ByteQuest.Core.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
-﻿using static Turn;
+﻿using ByteQuest.Core.Rules;
+using static Turn;
 
 Console.WriteLine("Welcome to ByteQuest!");
 
@@ -29,14 +30,14 @@ while (true)
 			case "attack":
 				Console.WriteLine($"You attack {enemy.Name}");
 				var requiredPercentile = 1 - (player.Accuracy / enemy.Evasion);
-				(var roll, seed) = RollPercentile(seed);
+				(var roll, seed) = Rolling.RollPercentile(seed);
 
 				if (roll >= requiredPercentile)
 				{
 					Console.WriteLine($"You managed to hit {enemy.Name}");
 
-					(var damageRoll, seed) = RollPercentile(seed);
-					(var defenceRoll, seed) = RollPercentile(seed);
+					(var damageRoll, seed) = Rolling.RollPercentile(seed);
+					(var defenceRoll, seed) = Rolling.RollPercentile(seed);
 					var damageForce = (uint)(damageRoll * player.Strength);
 					var blockingForce = (uint)(defenceRoll * enemy.Defence);
 					var damage = blockingForce > damageForce ? 0 : damageForce - blockingForce;
@@ -69,13 +70,13 @@ while (true)
 	{
 		Console.WriteLine($"{enemy.Name} tries to attack you!");
 		var requiredPercentile = 1 - (enemy.Accuracy / player.Evasion);
-		(var roll, seed) = RollPercentile(seed);
+		(var roll, seed) = Rolling.RollPercentile(seed);
 		if (roll >= requiredPercentile)
 		{
 			Console.WriteLine($"You have been hit!");
 
-			(var damageRoll, seed) = RollPercentile(seed);
-			(var defenceRoll, seed) = RollPercentile(seed);
+			(var damageRoll, seed) = Rolling.RollPercentile(seed);
+			(var defenceRoll, seed) = Rolling.RollPercentile(seed);
 			var damageForce = (uint)(damageRoll * enemy.Strength);
 			var blockingForce = (uint)(defenceRoll * player.Defence);
 			var damage = blockingForce > damageForce ? 0 : damageForce - blockingForce;
@@ -114,11 +115,7 @@ static string GetLine()
 	return line;
 }
 
-static (double Percentile, int NewSeed) RollPercentile(int seed)
-{
-	var random = new Random(seed);
-	return (random.NextDouble(), random.Next());
-}
+
 
 internal enum Turn
 {
