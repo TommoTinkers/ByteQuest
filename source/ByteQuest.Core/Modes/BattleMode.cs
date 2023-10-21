@@ -2,10 +2,8 @@ using ByteQuest.Core.Data;
 
 namespace ByteQuest.Core.Modes;
 
-public sealed record BattleMode(Player Player, Enemy Enemy, Turn Turn) : Mode;
+public abstract record BattleMode(Player Player, Enemy Enemy) : Mode;
 
-public enum Turn
-{
-	Players,
-	Enemies
-}
+public sealed record PlayersTurn(Player Player, Enemy Enemy) : BattleMode(Player, Enemy);
+
+public sealed record EnemiesTurn(Player Player, Enemy Enemy) : BattleMode(Player, Enemy);

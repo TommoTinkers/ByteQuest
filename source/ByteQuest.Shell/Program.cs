@@ -10,7 +10,7 @@ var enemy = new Enemy (Name: "Bob The Goblin", Health: 10u, Strength: 5u, Accura
 
 var player = new Player( Health: 10u, Strength: 5u, Accuracy: 5u, Evasion: 5u, Defence: 5u);
 
-var battleMode = new BattleMode(player, enemy, ByteQuest.Core.Modes.Turn.Players);
+var battleMode = new PlayersTurn(player, enemy);
 
 
 BattleView.View(battleMode);
