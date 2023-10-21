@@ -36,13 +36,12 @@ while (true)
 				{
 					Console.WriteLine($"You managed to hit {enemy.Name}");
 
-					(var damageRoll, seed) = Rolling.RollPercentile(seed);
+					(var strengthRoll, seed) = Rolling.RollPercentile(seed);
 					(var defenceRoll, seed) = Rolling.RollPercentile(seed);
-					var damageForce = (uint)(damageRoll * player.Strength);
-					var blockingForce = (uint)(defenceRoll * enemy.Defence);
-					var damage = blockingForce > damageForce ? 0 : damageForce - blockingForce;
-					
-					var damageDealt = Math.Min(enemy.Health, damage);
+
+
+					var damageDealt = BattleCalculations.CalculateDamage(player.Strength, enemy.Defence, enemy.Health,
+						strengthRoll, defenceRoll);
 
 					Console.WriteLine($"You did {damageDealt} points of damage to {enemy.Name}");
 					enemy = enemy with { Health = enemy.Health - damageDealt };
@@ -75,13 +74,11 @@ while (true)
 		{
 			Console.WriteLine($"You have been hit!");
 
-			(var damageRoll, seed) = Rolling.RollPercentile(seed);
+			(var strengthRoll, seed) = Rolling.RollPercentile(seed);
 			(var defenceRoll, seed) = Rolling.RollPercentile(seed);
-			var damageForce = (uint)(damageRoll * enemy.Strength);
-			var blockingForce = (uint)(defenceRoll * player.Defence);
-			var damage = blockingForce > damageForce ? 0 : damageForce - blockingForce;
-					
-			var damageDealt = Math.Min(player.Health, damage);
+
+			var damageDealt = BattleCalculations.CalculateDamage(enemy.Strength, player.Defence, player.Health,
+				strengthRoll, defenceRoll);
 
 			Console.WriteLine($"You suffered {damageDealt} points of damage.");
 			player = player with { Health = player.Health - damageDealt };
@@ -114,8 +111,6 @@ static string GetLine()
 
 	return line;
 }
-
-
 
 internal enum Turn
 {
