@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using ByteQuest.Core.Modes;
 using ByteQuest.Core.Modes.Battle;
 using ByteQuest.Core.Rules;
@@ -29,7 +30,7 @@ public static class BattleView
 			{
 				EnemyAttemptsToAttack(var enemyName) => $"{enemyName} attempts to attack you.",
 				EnemyFailedInAttackingPlayer => "But they missed.",
-				EnemySucceededInAttackingPlayer(var damage) => $"The hit you and do {damage} points of damage.",
+				EnemySucceededInAttackingPlayer(var damage) => $"They hit you and do {damage} points of damage.",
 				EnemyDefeatedPlayer => $"You died.",
 				var x => $"Error: No message for {x}"
 			};
@@ -63,34 +64,33 @@ public static class BattleView
 
 				return (state, mode);
 			}
-			
-			
-			
-			switch (input.ToLowerInvariant())
-			{
-				case "attack":
-					var result = PlayersTurnHandlers.Attack(state, mode);
 
-					foreach (var info in result.Info)
+			var availableCommand = PlayersTurnHandlers.AvailableCommands.Where(s => s.Name == input).ToImmutableArray();
+
+			if (availableCommand.Any())
+			{
+				var result = availableCommand.Single().Handler(state, mode);
+				foreach (var info in result.Info)
+				{
+					var msg = info switch
 					{
-						var msg = info switch
-						{
-							PlayerTurnFailed => "You missed.",
-							PlayerTurnAttempted attackAttempted => $"You attempt to strike {attackAttempted.EnemyName}",
-							PlayerTurnSucceeded(var damage) => $"You inflicted {damage} points of damage!",
-							EnemyWasDefeated(var enemyName) => $"You defeated {enemyName} !",
-							var x => $"Error: No message for {x}"
-						};
+						PlayerTurnFailed => "You missed.",
+						PlayerTurnAttempted attackAttempted => $"You attempt to strike {attackAttempted.EnemyName}",
+						PlayerTurnSucceeded(var damage) => $"You inflicted {damage} points of damage!",
+						EnemyWasDefeated(var enemyName) => $"You defeated {enemyName} !",
+						_ => $"Error: No message for {info}"
+					};
 						
-						Console.WriteLine(msg);
-					}
-					return (result.state, result.nextMode);
-					
-					
-				default:
-					Console.WriteLine("I dont understand what you want");
-					break;
+					Console.WriteLine(msg);
+				}
+				return (result.state, result.nextMode);
+
 			}
+			else
+			{
+				Console.WriteLine("I dont understand what you want");
+			}
+			
 		}
 	}
 }
