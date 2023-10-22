@@ -9,18 +9,15 @@ public static class BattleView
 {
 	public static Mode View(BattleMode mode)
 	{
-		while (true)
-		{
-			mode = mode switch
+			return mode switch
 			{
 				EnemiesTurn enemiesTurn => ViewEnemiesTurn(enemiesTurn),
 				PlayersTurn playersTurn => ViewPlayersTurn(playersTurn),
 				_ => throw new ArgumentOutOfRangeException(nameof(mode))
 			};
-		}
 	}
 
-	private static BattleMode ViewEnemiesTurn(EnemiesTurn mode)
+	private static Mode ViewEnemiesTurn(EnemiesTurn mode)
 	{
 				
 		var seed = Random.Shared.Next();
@@ -50,7 +47,7 @@ public static class BattleView
 			if (player.Health == 0)
 			{
 				Console.WriteLine($"You died.");
-				return mode;
+				return new PlayerDiedMode();
 			}
 		}
 		else
@@ -61,7 +58,7 @@ public static class BattleView
 		return new PlayersTurn(player, enemy);
 	}
 
-	private static BattleMode ViewPlayersTurn(PlayersTurn mode)
+	private static Mode ViewPlayersTurn(PlayersTurn mode)
 	{
 		
 		var seed = Random.Shared.Next();
@@ -95,16 +92,19 @@ public static class BattleView
 
 						Console.WriteLine($"You did {damageDealt} points of damage to {enemy.Name}");
 						enemy = enemy with { Health = enemy.Health - damageDealt };
+						
+						if (enemy.Health == 0)
+						{
+							Console.WriteLine($"You defeated {enemy.Name}");
+							return new ExitGameMode();
+						}
+						
 						return new EnemiesTurn(player, enemy);
 					}
 
 					Console.WriteLine($"You missed!");
 
-					if (enemy.Health == 0)
-					{
-						Console.WriteLine($"You defeated {enemy.Name}");
-						return mode;
-					}
+
 
 					return new EnemiesTurn(player, enemy);
 
