@@ -3,6 +3,7 @@ using ByteQuest.Core.Modes;
 using ByteQuest.Core.Modes.Battle;
 using ByteQuest.Core.Rules;
 using ByteQuest.Core.State;
+using ByteQuest.Shell.ViewModules;
 using static ByteQuest.Core.Rules.BattleCalculations;
 using static ByteQuest.Shell.Shell;
 
@@ -56,11 +57,8 @@ public static class BattleView
 			
 			if (input == "help")
 			{
-				var handlers = PlayersTurnHandlers.AvailableCommands.Select(s => s.Name);
-				foreach (var handler in handlers)
-				{
-					Console.WriteLine(handler);
-				}
+				var helps = PlayersTurnHandlers.AvailableCommands.Select(s => (s.Name, s.Description));
+				HelpDisplay.DisplayHelp(helps);
 
 				return (state, mode);
 			}

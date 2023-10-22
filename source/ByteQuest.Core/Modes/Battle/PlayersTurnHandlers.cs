@@ -8,17 +8,17 @@ namespace ByteQuest.Core.Modes.Battle;
 
 
 public sealed record PlayerCommandInfo
-	(string Name, Handler<BattleModeResult<PlayerTurnResult>, PlayersTurn> Handler) :
+	(string Name, string Description, Handler<BattleModeResult<PlayerTurnResult>, PlayersTurn> Handler) :
 		CommandInfo<BattleModeResult<PlayerTurnResult>, PlayersTurn>(Name, Handler);
 
 public static class PlayersTurnHandlers
 {
-	public static List<PlayerCommandInfo> AvailableCommands = new()
+	public static readonly List<PlayerCommandInfo> AvailableCommands = new()
 	{
-		new PlayerCommandInfo("attack", Attack)
+		new PlayerCommandInfo("attack", "Attack your enemy", Attack)
 	};
-	
-	public static BattleModeResult<PlayerTurnResult> Attack(GameState state, PlayersTurn mode)
+
+	private static BattleModeResult<PlayerTurnResult> Attack(GameState state, PlayersTurn mode)
 	{
 		var enemy = mode.Enemy;
 		var seed = state.Seed;
