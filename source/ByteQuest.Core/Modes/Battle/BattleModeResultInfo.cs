@@ -7,12 +7,12 @@ public sealed record BattleModeResult<T>(GameState state, Mode nextMode, Immutab
 
 public abstract record BattleModeResultInfo;
 
-public abstract record AttackResult : BattleModeResultInfo;
+public abstract record PlayerTurnResult : BattleModeResultInfo;
 
-public sealed record AttackAttempted(string EnemyName) : AttackResult;
+public sealed record PlayerTurnAttempted(string EnemyName) : PlayerTurnResult;
 
-public sealed record AttackFailed : AttackResult;
-public sealed record AttackSucceeded(uint damage) : AttackResult;
+public sealed record PlayerTurnFailed : PlayerTurnResult;
+public sealed record PlayerTurnSucceeded(uint damage) : PlayerTurnResult;
 
-public sealed record EnemyWasDefeated(string enemyName) : AttackResult;
+public sealed record EnemyWasDefeated(string enemyName) : PlayerTurnResult;
 

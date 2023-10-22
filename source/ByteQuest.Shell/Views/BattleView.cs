@@ -61,9 +61,9 @@ public static class BattleView
 					{
 						var msg = info switch
 						{
-							AttackFailed => "You missed.",
-							AttackAttempted attackAttempted => $"You attempt to strike {attackAttempted.EnemyName}",
-							AttackSucceeded(var damage) => $"You inflicted {damage} points of damage!",
+							PlayerTurnFailed => "You missed.",
+							PlayerTurnAttempted attackAttempted => $"You attempt to strike {attackAttempted.EnemyName}",
+							PlayerTurnSucceeded(var damage) => $"You inflicted {damage} points of damage!",
 							EnemyWasDefeated(var enemyName) => $"You defeated {enemyName} !",
 							var x => $"Error: No message for {x}"
 						};
