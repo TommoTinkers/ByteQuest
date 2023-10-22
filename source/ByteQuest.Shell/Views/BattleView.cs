@@ -61,14 +61,12 @@ public static class BattleView
 
 	private static (GameState,Mode) ViewPlayersTurn(GameState state, PlayersTurn mode)
 	{
-
-		var seed = state.Seed;
+		
 		var player = mode.Player;
 		var enemy = mode.Enemy;
 		
 		Console.WriteLine($"Your health: [{player.Health}]. Enemy health: [{enemy.Health}]");
 		Console.WriteLine("It is your turn. What do you want to do.");
-		
 		
 		while(true)
 		{
@@ -76,39 +74,22 @@ public static class BattleView
 			switch (input.ToLowerInvariant())
 			{
 				case "attack":
-					Console.WriteLine($"You attack {enemy.Name}");
-					(var accuracyRoll, var evasionRoll, seed) = Rolling.RollPercentilePair(seed);
+					var result = BattleModeHandlers.Attack(state, mode);
 
-					var didHit = CalculateDidHit(player.Accuracy, enemy.Evasion, accuracyRoll, evasionRoll);
-
-					if (didHit)
+					foreach (var info in result.Info)
 					{
-						Console.WriteLine($"You managed to hit {enemy.Name}");
-
-						(var strengthRoll, var defenceRoll, seed) = Rolling.RollPercentilePair(seed);
-
-
-						var damageDealt = CalculateDamage(player.Strength, enemy.Defence, enemy.Health,
-							strengthRoll, defenceRoll);
-
-						Console.WriteLine($"You did {damageDealt} points of damage to {enemy.Name}");
-						enemy = enemy with { Health = enemy.Health - damageDealt };
-						
-						if (enemy.Health == 0)
+						var msg = info switch
 						{
-							Console.WriteLine($"You defeated {enemy.Name}");
-							return (state with {Seed = seed}, new ExitGameMode());
-						}
-						
-						return (state with {Seed = seed}, new EnemiesTurn(player, enemy));
+							AttackFailed => "You missed.",
+							AttackAttempted attackAttempted => $"You attempt to strike {attackAttempted.EnemyName}",
+							AttackSucceeded(var damage) => $"You inflicted {damage} points of damage!",
+							EnemyWasDefeated(var enemyName) => $"You defeated {enemyName} !",
+							var x => $"Error: No message for {x}"
+						};
 					}
-
-					Console.WriteLine($"You missed!");
-
-
-
-					return (state with {Seed = seed}, new EnemiesTurn(player, enemy));
-
+					return (result.state, result.nextMode);
+					
+					
 				default:
 					Console.WriteLine("I dont understand what you want");
 					break;
