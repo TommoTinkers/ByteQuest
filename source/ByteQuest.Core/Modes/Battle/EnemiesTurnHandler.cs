@@ -16,7 +16,7 @@ public sealed record EnemyDefeatedPlayer() : EnemyAttackResult;
 
 public class EnemiesTurnHandler
 {
-	public static BattleModeResult Attack(GameState state, EnemiesTurn mode)
+	public static BattleModeResult<EnemyAttackResult> Attack(GameState state, EnemiesTurn mode)
 	{
 		var info = new List<EnemyAttackResult>();
 		var seed = state.Seed;
@@ -33,9 +33,7 @@ public class EnemiesTurnHandler
 				
 		if (didHit)
 		{
-			
 			(var strengthRoll, var  defenceRoll, seed) = Rolling.RollPercentilePair(seed);
-					
 
 			var damageDealt = BattleCalculations.CalculateDamage(enemy.Strength, player.Defence, player.Health,
 				strengthRoll, defenceRoll);
@@ -46,14 +44,13 @@ public class EnemiesTurnHandler
 			if (player.Health == 0)
 			{
 				info.Add(new EnemyDefeatedPlayer());
-				return new (state with {Seed = seed}, new PlayerDiedMode(), info.ToImmutableArray().CastArray<BattleModeResultInfo>());
+				return new (state with {Seed = seed}, new PlayerDiedMode(), info.ToImmutableArray());
 			}
 
-			return new(state with { Seed = seed }, new PlayersTurn(player, enemy), info.ToImmutableArray().CastArray<BattleModeResultInfo>());
+			return new(state with { Seed = seed }, new PlayersTurn(player, enemy), info.ToImmutableArray());
 		}
 
 		info.Add(new EnemyFailedInAttackingPlayer());
-		return new (state with {Seed = seed},new PlayersTurn(player, enemy), info.ToImmutableArray().CastArray<BattleModeResultInfo>());
-
+		return new (state with {Seed = seed},new PlayersTurn(player, enemy), info.ToImmutableArray());
 	}
 }
