@@ -2,31 +2,10 @@ using System.Collections.Immutable;
 using ByteQuest.Core.Data;
 using ByteQuest.Core.Rules;
 using ByteQuest.Core.State;
-using static ByteQuest.Core.Rules.BattleCalculations;
 
-namespace ByteQuest.Core.Modes;
+namespace ByteQuest.Core.Modes.Battle;
 
-public abstract record BattleMode(Player Player, Enemy Enemy) : Mode;
-
-public sealed record PlayersTurn(Player Player, Enemy Enemy) : BattleMode(Player, Enemy);
-
-public sealed record EnemiesTurn(Player Player, Enemy Enemy) : BattleMode(Player, Enemy);
-
-
-public abstract record BattleModeResultInfo;
-
-public abstract record AttackResult : BattleModeResultInfo;
-
-public sealed record AttackAttempted(string EnemyName) : AttackResult;
-
-public sealed record AttackFailed : AttackResult;
-public sealed record AttackSucceeded(uint damage) : AttackResult;
-
-public sealed record EnemyWasDefeated(string enemyName) : AttackResult;
-
-public sealed record BattleModeResult(GameState state, Mode nextMode, ImmutableArray<BattleModeResultInfo> Info);
-
-public static class BattleModeHandlers
+public static class PlayersTurnHandlers
 {
 	public static BattleModeResult Attack(GameState state, PlayersTurn mode)
 	{
@@ -39,7 +18,7 @@ public static class BattleModeHandlers
 		info.Add(new AttackAttempted(enemy.Name));
 		(var accuracyRoll, var evasionRoll, seed) = Rolling.RollPercentilePair(seed);
 
-		var didHit = CalculateDidHit(player.Accuracy, enemy.Evasion, accuracyRoll, evasionRoll);
+		var didHit = BattleCalculations.CalculateDidHit(player.Accuracy, enemy.Evasion, accuracyRoll, evasionRoll);
 
 		return didHit
 			? AttackSucceeded(state, seed, player, enemy, info)
@@ -51,7 +30,7 @@ public static class BattleModeHandlers
 		(var strengthRoll, var defenceRoll, seed) = Rolling.RollPercentilePair(seed);
 
 
-		var damageDealt = CalculateDamage(player.Strength, enemy.Defence, enemy.Health,
+		var damageDealt = BattleCalculations.CalculateDamage(player.Strength, enemy.Defence, enemy.Health,
 			strengthRoll, defenceRoll);
 
 		info.Add(new AttackSucceeded(damageDealt));

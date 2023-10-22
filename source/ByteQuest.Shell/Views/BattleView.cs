@@ -1,4 +1,5 @@
 using ByteQuest.Core.Modes;
+using ByteQuest.Core.Modes.Battle;
 using ByteQuest.Core.Rules;
 using ByteQuest.Core.State;
 using static ByteQuest.Core.Rules.BattleCalculations;
@@ -20,43 +21,23 @@ public static class BattleView
 
 	private static (GameState, Mode) ViewEnemiesTurn(GameState state, EnemiesTurn mode)
 	{
-				
-		var seed = state.Seed;
-		var player = mode.Player;
-		var enemy = mode.Enemy;
 
-		
-		Console.WriteLine($"{enemy.Name} tries to attack you!");
-		(var accuracyRoll, var evasionRoll, seed) = Rolling.RollPercentilePair(seed);
-				
-
-		var didHit = CalculateDidHit(enemy.Accuracy, player.Evasion, accuracyRoll, evasionRoll);
-				
-		if (didHit)
+		var result = EnemiesTurnHandler.Attack(state, mode);
+		foreach (var info in result.Info)
 		{
-			Console.WriteLine($"You have been hit!");
-
-			(var strengthRoll, var  defenceRoll, seed) = Rolling.RollPercentilePair(seed);
-					
-
-			var damageDealt = CalculateDamage(enemy.Strength, player.Defence, player.Health,
-				strengthRoll, defenceRoll);
-
-			Console.WriteLine($"You suffered {damageDealt} points of damage.");
-			player = player with { Health = player.Health - damageDealt };
-
-			if (player.Health == 0)
+			var msg = info switch
 			{
-				Console.WriteLine($"You died.");
-				return (state with {Seed = seed}, new PlayerDiedMode());
-			}
-		}
-		else
-		{
-			Console.WriteLine($"He missed!");
+				EnemyAttemptsToAttack(var enemyName) => $"{enemyName} attempts to attack you.",
+				EnemyFailedInAttackingPlayer => "But they missed.",
+				EnemySucceededInAttackingPlayer(var damage) => $"The hit you and do {damage} points of damage.",
+				EnemyDefeatedPlayer => $"You died.",
+				var x => $"Error: No message for {x}"
+			};
+						
+			Console.WriteLine(msg);
 		}
 
-		return (state with {Seed = seed},new PlayersTurn(player, enemy));
+		return (result.state, result.nextMode);
 	}
 
 	private static (GameState,Mode) ViewPlayersTurn(GameState state, PlayersTurn mode)
@@ -74,7 +55,7 @@ public static class BattleView
 			switch (input.ToLowerInvariant())
 			{
 				case "attack":
-					var result = BattleModeHandlers.Attack(state, mode);
+					var result = PlayersTurnHandlers.Attack(state, mode);
 
 					foreach (var info in result.Info)
 					{
@@ -86,6 +67,8 @@ public static class BattleView
 							EnemyWasDefeated(var enemyName) => $"You defeated {enemyName} !",
 							var x => $"Error: No message for {x}"
 						};
+						
+						Console.WriteLine(msg);
 					}
 					return (result.state, result.nextMode);
 					

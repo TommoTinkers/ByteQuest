@@ -1,5 +1,6 @@
 ﻿using ByteQuest.Core.Data;
 using ByteQuest.Core.Modes;
+using ByteQuest.Core.Modes.Battle;
 using ByteQuest.Core.State;
 using ByteQuest.Shell.Views;
 
