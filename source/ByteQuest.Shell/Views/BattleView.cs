@@ -1,5 +1,6 @@
 using ByteQuest.Core.Modes;
 using ByteQuest.Core.Rules;
+using ByteQuest.Core.State;
 using static ByteQuest.Core.Rules.BattleCalculations;
 using static ByteQuest.Shell.Shell;
 
@@ -7,17 +8,17 @@ namespace ByteQuest.Shell.Views;
 
 public static class BattleView
 {
-	public static Mode View(BattleMode mode)
+	public static (GameState, Mode) View(GameState state, BattleMode mode)
 	{
 			return mode switch
 			{
-				EnemiesTurn enemiesTurn => ViewEnemiesTurn(enemiesTurn),
-				PlayersTurn playersTurn => ViewPlayersTurn(playersTurn),
+				EnemiesTurn enemiesTurn => ViewEnemiesTurn(state, enemiesTurn),
+				PlayersTurn playersTurn => ViewPlayersTurn(state, playersTurn),
 				_ => throw new ArgumentOutOfRangeException(nameof(mode))
 			};
 	}
 
-	private static Mode ViewEnemiesTurn(EnemiesTurn mode)
+	private static (GameState, Mode) ViewEnemiesTurn(GameState state, EnemiesTurn mode)
 	{
 				
 		var seed = Random.Shared.Next();
@@ -47,7 +48,7 @@ public static class BattleView
 			if (player.Health == 0)
 			{
 				Console.WriteLine($"You died.");
-				return new PlayerDiedMode();
+				return (state, new PlayerDiedMode());
 			}
 		}
 		else
@@ -55,10 +56,10 @@ public static class BattleView
 			Console.WriteLine($"He missed!");
 		}
 
-		return new PlayersTurn(player, enemy);
+		return (state,new PlayersTurn(player, enemy));
 	}
 
-	private static Mode ViewPlayersTurn(PlayersTurn mode)
+	private static (GameState,Mode) ViewPlayersTurn(GameState state, PlayersTurn mode)
 	{
 		
 		var seed = Random.Shared.Next();
@@ -96,17 +97,17 @@ public static class BattleView
 						if (enemy.Health == 0)
 						{
 							Console.WriteLine($"You defeated {enemy.Name}");
-							return new ExitGameMode();
+							return (state, new ExitGameMode());
 						}
 						
-						return new EnemiesTurn(player, enemy);
+						return (state, new EnemiesTurn(player, enemy));
 					}
 
 					Console.WriteLine($"You missed!");
 
 
 
-					return new EnemiesTurn(player, enemy);
+					return (state, new EnemiesTurn(player, enemy));
 
 				default:
 					Console.WriteLine("I dont understand what you want");
