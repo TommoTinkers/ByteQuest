@@ -21,7 +21,7 @@ public static class BattleView
 	private static (GameState, Mode) ViewEnemiesTurn(GameState state, EnemiesTurn mode)
 	{
 				
-		var seed = Random.Shared.Next();
+		var seed = state.Seed;
 		var player = mode.Player;
 		var enemy = mode.Enemy;
 
@@ -48,7 +48,7 @@ public static class BattleView
 			if (player.Health == 0)
 			{
 				Console.WriteLine($"You died.");
-				return (state, new PlayerDiedMode());
+				return (state with {Seed = seed}, new PlayerDiedMode());
 			}
 		}
 		else
@@ -56,13 +56,13 @@ public static class BattleView
 			Console.WriteLine($"He missed!");
 		}
 
-		return (state,new PlayersTurn(player, enemy));
+		return (state with {Seed = seed},new PlayersTurn(player, enemy));
 	}
 
 	private static (GameState,Mode) ViewPlayersTurn(GameState state, PlayersTurn mode)
 	{
-		
-		var seed = Random.Shared.Next();
+
+		var seed = state.Seed;
 		var player = mode.Player;
 		var enemy = mode.Enemy;
 		
@@ -97,17 +97,17 @@ public static class BattleView
 						if (enemy.Health == 0)
 						{
 							Console.WriteLine($"You defeated {enemy.Name}");
-							return (state, new ExitGameMode());
+							return (state with {Seed = seed}, new ExitGameMode());
 						}
 						
-						return (state, new EnemiesTurn(player, enemy));
+						return (state with {Seed = seed}, new EnemiesTurn(player, enemy));
 					}
 
 					Console.WriteLine($"You missed!");
 
 
 
-					return (state, new EnemiesTurn(player, enemy));
+					return (state with {Seed = seed}, new EnemiesTurn(player, enemy));
 
 				default:
 					Console.WriteLine("I dont understand what you want");
