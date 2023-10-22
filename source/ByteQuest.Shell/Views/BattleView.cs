@@ -52,6 +52,20 @@ public static class BattleView
 		while(true)
 		{
 			var input = GetLine();
+			
+			if (input == "help")
+			{
+				var handlers = PlayersTurnHandlers.AvailableCommands.Select(s => s.Name);
+				foreach (var handler in handlers)
+				{
+					Console.WriteLine(handler);
+				}
+
+				return (state, mode);
+			}
+			
+			
+			
 			switch (input.ToLowerInvariant())
 			{
 				case "attack":
